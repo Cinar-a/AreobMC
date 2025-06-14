@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlayGalaxy</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --primary: #a64eff;
+      --text: #ffffff;
+      --text-muted: #aaaaaa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background-color: #1a1a1a;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 28px;
+    }
+
+    nav a {
+      color: var(--text);
+      margin-left: 20px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    main {
+      padding: 40px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(166, 78, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      border-top: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PlayGalaxy</h1>
+    <nav>
+      <a href="#">Anasayfa</a>
+      <a href="#">Haberler</a>
+      <a href="#">Yayınlar</a>
+      <a href="#">Discord</a>
+      <a href="#">Hakkımızda</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2 class="section-title">PlayGalaxy'e Hoşgeldiniz</h2>
+      <div class="card">
+        <p>En güncel oyun haberleri, canlı yayınlar ve topluluk eğlencesi portalınız.</p>
+      </div>
+    </section>
+    <section>
+      <h2 class="section-title">Son Haberler</h2>
+      <div class="card">
+        <h3>🎮 Valorant Unreal Engine'a Geçti!</h3>
+        <p>Çok Beklenen Unreal Engine Güncellemesi ve Valorant Mobile Çinde Kapalı Beta Şeklinde Oynanabiliyor!</p>
+      </div>
+      <div class="card">
+        <h3>👾 Hergün Kick'te 21:00'dan 00:00'a Kadar Yayın Açıktır!</h3>
+        <p>Kick:Syv3x</p>
+      </div>
+    </section>
+    <section>
+      <h2 class="section-title">Topluluğa Katılın</h2>
+      <div class="card">
+        <p>
+          Bize 
+          <a href="https://kick.com/Syvex" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">Kick</a> ve 
+          <a href="https://discord.gg/3gFgh4xc" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">Discord</a> üzerinden katılın ve diğer oyuncularla bağlantı kurun!
+        </p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 PlayGalaxy. Tüm hakları saklıdır.</p>
+  </footer>
+</body>
+</html>
