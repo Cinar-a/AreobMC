@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>AreonMC | Minecraft Sunucusu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">AREONMC</div>
+  <nav>
+    <a href="/">Ana Sayfa</a>
+    <a href="play.html">Oyna</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>AREONMC MINECRAFT SUNUCUSU</h1>
+  <p>
+    BoxPVP, Survival, Etkinlikler ve daha fazlası.
+    Gerçek rekabet, gerçek eğlence.
+  </p>
+  <a class="btn" href="play.html">HEMEN OYNA</a>
+</section>
+
+</body>
+</html>

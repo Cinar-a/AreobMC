@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>AreonMC | Oyna</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">AREONMC</div>
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="play.html">Oyna</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Sunucuya Katıl</h1>
+  <p>
+    Minecraft sürümü: <b>1.16 - 1.20</b><br>
+    IP Adresi:
+  </p>
+
+  <h2 style="font-size:32px; margin-top:20px;">
+    play.areonmc.com
+  </h2>
+
+  <p style="margin-top:30px; color:#aaa;">
+    BoxPVP • Survival • Etkinlikler • Ödüller
+  </p>
+
+  <a class="btn" href="index.html">Geri Dön</a>
+</section>
+
+</body>
+</html>
