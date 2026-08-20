@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - APEX SOFTWARE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-panel { background: rgba(18, 18, 26, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="bg-black text-white p-6 md:p-12 min-h-screen selection:bg-purple-600 selection:text-white">
+
+    <!-- Admin Paneli Ekranı (Doğrudan Açılır) -->
+    <div id="admin-panel" class="max-w-4xl mx-auto space-y-8">
+        <div class="flex justify-between items-center border-b border-zinc-800/80 pb-6">
+            <div class="flex items-center space-x-3">
+                <img src="https://images.weserv.nl/?url=i.imgur.com/aAa8H4j.png" alt="Logo" class="w-9 h-9 object-contain drop-shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                <h1 class="text-2xl font-black text-purple-500 tracking-wide">YÖNETİM PANELİ</h1>
+            </div>
+            <a href="index.html" class="px-5 py-2.5 bg-zinc-900 border border-zinc-800 rounded-2xl text-sm font-bold hover:bg-zinc-800 transition-all hover:scale-105">Siteye Git →</a>
+        </div>
+
+        <!-- Sistem Ayarları (Destek Aç/Kapat) -->
+        <div class="glass-panel p-8 rounded-3xl space-y-4 shadow-xl">
+            <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 bg-purple-500 rounded-full"></span>
+                <span>Canlı Destek Sistemi Kontrolü</span>
+            </h2>
+            <div class="flex justify-between items-center bg-black/50 p-4 rounded-2xl border border-zinc-800">
+                <span class="text-sm text-slate-300">Canlı Destek Sohbeti Durumu</span>
+                <button id="toggle-chat-btn" onclick="toggleChatSystem()" class="px-5 py-2 rounded-xl text-xs font-bold transition-all">Yükleniyor...</button>
+            </div>
+        </div>
+
+        <!-- Ürün Ekleme / Düzenleme Formu -->
+        <div class="glass-panel p-8 rounded-3xl space-y-5 shadow-xl">
+            <h2 id="form-title" class="text-xl font-bold text-white flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 bg-purple-500 rounded-full"></span>
+                <span>Yeni Hile / Ürün Yükle</span>
+            </h2>
+            <input type="hidden" id="edit-id" value="">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="p-name" placeholder="Ürün Adı" class="p-4 bg-black/60 border border-zinc-800 rounded-2xl focus:outline-none focus:border-purple-500 transition-all">
+                <input type="text" id="p-image" placeholder="Fotoğraf URL (Görsel Linki)" class="p-4 bg-black/60 border border-zinc-800 rounded-2xl focus:outline-none focus:border-purple-500 transition-all">
+            </div>
+            <textarea id="p-desc" placeholder="Ürün Açıklaması" class="w-full p-4 bg-black/60 border border-zinc-800 rounded-2xl focus:outline-none focus:border-purple-500 transition-all h-28 resize-none"></textarea>
+            <input type="text" id="p-link" placeholder="İndirme Linki" class="w-full p-4 bg-black/60 border border-zinc-800 rounded-2xl focus:outline-none focus:border-purple-500 transition-all">
+            
+            <div class="flex space-x-3">
+                <button id="save-btn" onclick="saveProduct()" class="flex-1 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-bold transition-all shadow-lg shadow-purple-600/30 active:scale-95">Ürünü Yükle</button>
+                <button id="cancel-edit-btn" onclick="resetForm()" class="hidden px-6 py-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl font-bold transition-all">İptal</button>
+            </div>
+        </div>
+
+        <!-- Ürünler Listesi -->
+        <div class="glass-panel p-8 rounded-3xl space-y-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white">Yüklü Ürünler ve Düzenleme</h2>
+            <div id="admin-product-list" class="space-y-3"></div>
+        </div>
+
+        <!-- Kullanıcılar ve Rol Yönetimi -->
+        <div class="glass-panel p-8 rounded-3xl space-y-5 shadow-xl">
+            <h2 class="text-xl font-bold text-white">Kayıtlı Kullanıcılar ve Rol Yönetimi</h2>
+            <div id="admin-user-list" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAdminProducts();
+            renderAdminUsers();
+            renderChatSettings();
+        });
+
+        function getProducts() { return JSON.parse(localStorage.getItem('apex_products')) || []; }
+        function saveProducts(p) { localStorage.setItem('apex_products', JSON.stringify(p)); }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-product-list');
+            const products = getProducts();
+            if(products.length === 0) { list.innerHTML = '<p class="text-slate-500 text-sm">Ürün yok.</p>'; return; }
+            list.innerHTML = products.map(p => `
+                <div class="flex justify-between items-center bg-black/50 border border-zinc-800/80 p-5 rounded-2xl gap-4">
+                    <div>
+                        <h4 class="font-bold text-white text-lg">${p.name}</h4>
+                        <span class="text-xs text-slate-400">${p.isUpdating ? 'Update Modunda' : 'Aktif'}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="px-3 py-2 bg-blue-600/20 text-blue-400 rounded-xl text-xs font-bold">Düzenle</button>
+                        <button onclick="toggleUpdate(${p.id})" class="px-3 py-2 bg-amber-500/20 text-amber-400 rounded-xl text-xs font-bold">${p.isUpdating ? 'Normal Yap' : 'Update Ver'}</button>
+                        <button onclick="deleteProduct(${p.id})" class="px-3 py-2 bg-red-500/20 text-red-400 rounded-xl text-xs font-bold">Sil</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-user-list');
+            const users = JSON.parse(localStorage.getItem('apex_users')) || [];
+            if(users.length === 0) { list.innerHTML = '<p class="text-slate-500 text-sm">Kayıtlı kullanıcı yok.</p>'; return; }
+            list.innerHTML = users.map(u => `
+                <div class="flex justify-between items-center bg-black/50 border border-zinc-800/80 p-4 rounded-2xl">
+                    <div>
+                        <span class="font-bold text-white">@${u.nick}</span>
+                        <span class="ml-2 text-xs px-2 py-1 bg-purple-600/20 text-purple-300 rounded">${u.role}</span>
+                    </div>
+                    <div>
+                        <button onclick="toggleUserRole('${u.nick}')" class="px-4 py-2 bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 rounded-xl text-xs font-bold transition-all">Rolü Değiştir (Member/Support)</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleUserRole(nick) {
+            let users = JSON.parse(localStorage.getItem('apex_users')) || [];
+            users = users.map(u => {
+                if(u.nick === nick) {
+                    u.role = u.role === 'Member' ? 'Support' : 'Member';
+                }
+                return u;
+            });
+            localStorage.setItem('apex_users', JSON.stringify(users));
+            let curr = JSON.parse(localStorage.getItem('apex_current_user'));
+            if(curr && curr.nick === nick) {
+                curr.role = curr.role === 'Member' ? 'Support' : 'Member';
+                localStorage.setItem('apex_current_user', JSON.stringify(curr));
+            }
+            renderAdminUsers();
+        }
+
+        function renderChatSettings() {
+            const settings = JSON.parse(localStorage.getItem('apex_settings')) || { chatOpen: true };
+            const btn = document.getElementById('toggle-chat-btn');
+            if(settings.chatOpen) {
+                btn.className = 'px-5 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+                btn.innerText = 'Sistem Açık (Kapatmak için tıkla)';
+            } else {
+                btn.className = 'px-5 py-2 rounded-xl text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30';
+                btn.innerText = 'Sistem Kapalı (Açmak için tıkla)';
+            }
+        }
+
+        function toggleChatSystem() {
+            let settings = JSON.parse(localStorage.getItem('apex_settings')) || { chatOpen: true };
+            settings.chatOpen = !settings.chatOpen;
+            localStorage.setItem('apex_settings', JSON.stringify(settings));
+            renderChatSettings();
+        }
+
+        function saveProduct() {
+            const editId = document.getElementById('edit-id').value;
+            const name = document.getElementById('p-name').value;
+            const image = document.getElementById('p-image').value;
+            const desc = document.getElementById('p-desc').value;
+            const link = document.getElementById('p-link').value;
+            if(!name || !image || !link) { alert('Zorunlu alanları doldurun!'); return; }
+            let products = getProducts();
+            if(editId) {
+                products = products.map(p => p.id == editId ? { ...p, name, image, desc, link } : p);
+            } else {
+                products.push({ id: Date.now(), name, image, desc, link, isUpdating: false });
+            }
+            saveProducts(products);
+            resetForm();
+            renderAdminProducts();
+        }
+
+        function editProduct(id) {
+            const p = getProducts().find(item => item.id === id);
+            if(!p) return;
+            document.getElementById('edit-id').value = p.id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-image').value = p.image;
+            document.getElementById('p-desc').value = p.desc;
+            document.getElementById('p-link').value = p.link;
+            document.getElementById('form-title').innerHTML = '<span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span><span>Ürün Düzenle</span>';
+            document.getElementById('save-btn').innerText = 'Değişiklikleri Kaydet';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-link').value = '';
+            document.getElementById('form-title').innerHTML = '<span class="w-2.5 h-2.5 bg-purple-500 rounded-full"></span><span>Yeni Hile / Ürün Yükle</span>';
+            document.getElementById('save-btn').innerText = 'Ürünü Yükle';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function toggleUpdate(id) {
+            let products = getProducts().map(p => p.id === id ? { ...p, isUpdating: !p.isUpdating } : p);
+            saveProducts(products);
+            renderAdminProducts();
+        }
+
+        function deleteProduct(id) {
+            if(confirm('Silmek istediğinize emin misiniz?')) {
+                saveProducts(getProducts().filter(p => p.id !== id));
+                renderAdminProducts();
+            }
+        }
+    </script>
+</body>
+</html>
